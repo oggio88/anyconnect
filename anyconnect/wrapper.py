@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 
-import xml.etree.ElementTree as ElementTree
-from io import TextIOWrapper
 from os import environ
-from os.path import exists
-from sys import argv, stdout
+from sys import argv
 from urllib.request import urlopen, Request
 
 def run():
@@ -21,26 +18,18 @@ def run():
         else:
             index += 1
 
-    data = ("""endpoint.os.version="Linux";
+    data = """endpoint.os.version="Linux";
     endpoint.file["LinuxFUpdate"] = {};
-    endpoint.file["LinuxFUpdate"].exists = "%s";
+    endpoint.file["LinuxFUpdate"].exists = "true";
     endpoint.file["LinuxFUpdate"].path = "/etc/cron.d/fupdate";
     endpoint.file["LinuxFUpdate"].name = "fupdate";
     endpoint.file["LinuxLaptopPass"] = {};
-    endpoint.file["LinuxLaptopPass"].exists = "%s";
+    endpoint.file["LinuxLaptopPass"].exists = "true";
     endpoint.file["LinuxLaptopPass"].path = "/etc/.adm-laptop-pass";
     endpoint.file["LinuxLaptopPass"].name = ".adm-laptop-pass";
-    """ % (str(exists('/etc/cron.d/fupdate')).lower(), str(exists('/etc/.adm-laptop-pass')).lower()))
-    stdout.write(data)
-    url = "https://%s/+CSCOE+/sdesktop/token.xml?ticket=%s&stub=%s" % (
-        environ['CSD_HOSTNAME'], parms['ticket'], parms['stub']
-    )
-    with urlopen(url) as request:
-        text_buffer = TextIOWrapper(request)
-        root = ElementTree.parse(text_buffer).getroot()
-        token = root.find('./token').text
+    """
     url = "https://%s/+CSCOE+/sdesktop/scan.xml?reusebrowser=1" % (environ['CSD_HOSTNAME'])
-    request = Request(url, headers={'Cookie': 'sdesktop='+token, 'Content-Type': 'text/xml'})
+    request = Request(url, headers={'Cookie': 'sdesktop=' + environ['CSD_TOKEN'], 'Content-Type': 'text/xml'})
     with urlopen(request, data=data.encode()) as request:
         pass
 
