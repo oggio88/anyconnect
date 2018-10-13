@@ -8,7 +8,7 @@ def read(fname):
 
 config = {
     'name': "anyconnect",
-    'version': "0.1",
+    'version': "0.2",
     'author': "Walter Oggioni",
     'author_email': "oggioni.walter@gmail.com",
     'description': ("csd wrapper scritp to use with Cisco's VPNs"),
