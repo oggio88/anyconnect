@@ -3,6 +3,7 @@
 from os import environ
 from sys import argv
 from urllib.request import urlopen, Request
+import ssl
 
 def run():
     parms = dict()
@@ -29,8 +30,12 @@ def run():
     endpoint.file["LinuxLaptopPass"].name = ".adm-laptop-pass";
     """
     url = "https://%s/+CSCOE+/sdesktop/scan.xml?reusebrowser=1" % (environ['CSD_HOSTNAME'])
+    ctx = ssl.SSLContext()
+    ctx.verify_mode = ssl.CERT_REQUIRED
+    ctx.check_hostname = False
+    ctx.load_default_certs()
     request = Request(url, headers={'Cookie': 'sdesktop=' + environ['CSD_TOKEN'], 'Content-Type': 'text/xml'})
-    with urlopen(request, data=data.encode()) as request:
+    with urlopen(request, data=data.encode(), context=ctx) as request:
         pass
 
 
